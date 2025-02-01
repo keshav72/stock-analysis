@@ -15,9 +15,7 @@ stockSearch.addEventListener('input', handleStockSearch);
 document.getElementById('ma20').addEventListener('change', updateCharts);
 document.getElementById('ma50').addEventListener('change', updateCharts);
 document.getElementById('ma200').addEventListener('change', updateCharts);
-document.getElementById('ema20').addEventListener('change', updateCharts);
-document.getElementById('ema50').addEventListener('change', updateCharts);
-document.getElementById('ema200').addEventListener('change', updateCharts);
+document.getElementById('rsi').addEventListener('change', updateCharts);
 
 // Fetch Stock Data
 async function fetchStockData(symbol) {
@@ -48,7 +46,12 @@ async function handleStockSearch(e) {
   const response = await axios.get(url);
   const suggestionsData = response.data.bestMatches;
 
-  suggestions.innerHTML = suggestionsData.map(stock => `
+  // Filter for Indian stocks (BSE or NSE)
+  const indianStocks = suggestionsData.filter(stock => 
+    stock['4. region'] === 'India/Bombay' || stock['4. region'] === 'India/National Stock Exchange'
+  );
+
+  suggestions.innerHTML = indianStocks.map(stock => `
     <div class="list-group-item" data-symbol="${stock['1. symbol']}">
       ${stock['1. symbol']} - ${stock['2. name']}
     </div>
@@ -89,17 +92,16 @@ function renderCandlestickChart(data) {
       datasets: [{
         label: 'Stock Price',
         data: data.map(row => ({
-          x: row.date,
+          t: new Date(row.date).getTime(),
           o: row.open,
           h: row.high,
           l: row.low,
           c: row.close,
         })),
-        borderColor: '#000',
         color: {
-          up: 'green',
-          down: 'red',
-          unchanged: 'gray',
+          up: '#00ff00',
+          down: '#ff0000',
+          unchanged: '#cccccc',
         },
       }],
     },
@@ -150,8 +152,8 @@ function renderRSIChart(data) {
     data: {
       datasets: [{
         label: 'RSI',
-        data: data.map(row => ({ x: row.date, y: row.rsi })),
-        borderColor: 'blue',
+        data: data.map(row => ({ x: new Date(row.date).getTime(), y: row.rsi })),
+        borderColor: '#007bff',
       }],
     },
     options: {
@@ -180,7 +182,7 @@ function renderVolumeChart(data) {
     data: {
       datasets: [{
         label: 'Volume',
-        data: data.map(row => ({ x: row.date, y: row.volume })),
+        data: data.map(row => ({ x: new Date(row.date).getTime(), y: row.volume })),
         backgroundColor: 'rgba(0, 123, 255, 0.5)',
       }],
     },
@@ -201,8 +203,8 @@ function renderVolumeChart(data) {
   });
 }
 
-// Update Charts (for Moving Averages)
+// Update Charts (for Moving Averages and RSI)
 function updateCharts() {
   // Add logic to calculate and display moving averages
-  console.log('Update charts with moving averages');
+  console.log('Update charts with moving averages and RSI');
 }
