@@ -1,0 +1,35 @@
+body {
+  font-family: 'Arial', sans-serif;
+  background-color: #f8f9fa;
+  color: #333;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+h1 {
+  color: #007bff;
+}
+
+#suggestions {
+  position: absolute;
+  z-index: 1000;
+  width: 100%;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.list-group-item {
+  cursor: pointer;
+}
+
+.list-group-item:hover {
+  background-color: #007bff;
+  color: white;
+}
+
+canvas {
+  margin-bottom: 20px;
+}
